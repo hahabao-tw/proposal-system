@@ -121,6 +121,19 @@
   .notice-num { font-family: var(--calli); font-size: 30px; font-weight: 400; color: var(--gold); flex-shrink: 0; line-height: 1; min-width: 28px; text-shadow: 0 2px 8px rgba(232,198,106,0.3); }
   .notice-list li.warning .notice-num { color: var(--crimson-bright); }
   .notice-list strong { color: var(--gold-bright); font-weight: 700; }
+  .page-foot-note { font-size: 12px; color: var(--ink-muted); margin: -16px 0 24px; letter-spacing: 0.5px; line-height: 1.6; }
+
+  /* 提案類型按鈕 */
+  .type-grid { display: flex; gap: 9px; flex-wrap: wrap; margin-bottom: 4px; }
+  .type-btn {
+    flex: 1; min-width: 100px; padding: 12px 14px; border-radius: 4px;
+    border: 1px solid var(--border-bright);
+    background: linear-gradient(160deg, var(--panel2), var(--panel));
+    color: var(--ink-dim); font-size: 15px; cursor: pointer; transition: all 0.2s;
+    font-family: var(--calli); letter-spacing: 2px; white-space: nowrap; position: relative; overflow: hidden;
+  }
+  .type-btn:hover { border-color: var(--gold); color: var(--gold-bright); box-shadow: 0 0 12px rgba(232,198,106,0.3); transform: translateY(-1px); }
+  .type-btn.selected { border-color: var(--gold-bright); background: linear-gradient(160deg, var(--gold), var(--gold-deep)); color: var(--bg-deep); font-weight: 700; box-shadow: 0 0 16px rgba(232,198,106,0.5); }
 
   .system-group { margin-bottom: 24px; }
   .group-label { font-family: var(--calli); font-size: 21px; font-weight: 400; letter-spacing: 3px; color: var(--gold); margin-bottom: 13px; padding-bottom: 8px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
@@ -150,9 +163,10 @@
   .attach-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
   .attach-icon { font-size: 28px; margin-bottom: 8px; }
   .attach-hint { font-size: 14px; color: var(--gold); font-family: var(--calli); letter-spacing: 2px; }
-  .camera-btn { flex: 1; min-width: 190px; border: 1.5px solid var(--crimson); border-radius: 5px; background: linear-gradient(160deg, rgba(158,43,37,0.25), rgba(36,22,12,0.5)); cursor: pointer; transition: all 0.25s; padding: 24px 16px; text-align: center; font-family: var(--serif); }
+  .camera-btn { flex: 0 0 auto; min-width: 0; border: 1.5px solid var(--crimson); border-radius: 5px; background: linear-gradient(160deg, rgba(158,43,37,0.25), rgba(36,22,12,0.5)); cursor: pointer; transition: all 0.25s; padding: 14px 20px; text-align: center; font-family: var(--serif); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
   .camera-btn:hover { box-shadow: 0 0 16px rgba(200,70,60,0.4); transform: translateY(-1px); }
-  .camera-btn .attach-icon { color: var(--crimson-bright); }
+  .camera-btn .attach-icon { color: var(--crimson-bright); font-size: 24px; margin-bottom: 0; line-height: 1; }
+  .camera-btn .attach-hint { font-size: 13px; }
   .attach-sub { font-size: 13px; color: var(--ink-muted); margin-top: 12px; line-height: 1.7; }
   .attach-sub strong { color: var(--gold); }
   .attach-list { margin-top: 16px; display: flex; flex-direction: column; gap: 7px; }
@@ -289,13 +303,14 @@
     <ul class="notice-list">
       <li>
         <div class="notice-num">壹</div>
-        <div>提案前，請預先與<strong>主管</strong>或<strong>經紀本部主管</strong>討論，確保內容無誤後再開始提案。</div>
+        <div>提案前，請預先與<strong>業務主管</strong>或<strong>經紀本部主管</strong>討論，確保內容無誤後再開始提案。</div>
       </li>
       <li class="warning">
         <div class="notice-num">貳</div>
         <div>此服務僅受理<strong>軟體或系統改善建議</strong>。若為系統 BUG，請直接寄信至<strong>客服部門</strong>反應，勿透過本服務提交。</div>
       </li>
     </ul>
+    <div class="page-foot-note">如後續會使用相機拍照，建議不要用 Line 內建瀏覽器開啟本網址。</div>
     <div class="btn-row">
       <button class="btn btn-primary" onclick="goTo(2)">確定，開始提案</button>
     </div>
@@ -366,6 +381,15 @@
     <div class="page-subtitle">請詳述您的建議內容</div>
 
     <div class="field">
+      <label>提案類型</label>
+      <div class="type-grid">
+        <button type="button" class="type-btn" onclick="selectType(this,'既有功能調整')">既有功能調整</button>
+        <button type="button" class="type-btn" onclick="selectType(this,'新增功能')">新增功能</button>
+        <button type="button" class="type-btn" onclick="selectType(this,'兩者皆是')">兩者皆是</button>
+      </div>
+    </div>
+
+    <div class="field">
       <label>描述</label>
       <textarea id="description" placeholder="請詳述軟體期望改善的功能或需要調整的地方" oninput="updateCount('description','descCount')"></textarea>
       <div class="char-count"><span id="descCount">0</span> / 2000</div>
@@ -380,8 +404,8 @@
           <div class="attach-hint">選擇檔案</div>
         </div>
         <button type="button" class="camera-btn" onclick="openCamera()">
-          <div class="attach-icon">📷</div>
-          <div class="attach-hint">開啟相機拍照</div>
+          <span class="attach-icon">📷</span>
+          <span class="attach-hint">拍照</span>
         </button>
       </div>
       <div class="size-bar-wrap" id="sizeBarWrap"><div class="size-bar" id="sizeBar"></div></div>
@@ -505,7 +529,13 @@ const GAS_URL = 'https://script.google.com/macros/s/AKfycby_zKSFpd7Km5xmsfQISzRV
 const MAX_SIZE = 10 * 1024 * 1024;
 const MAX_CHARS = 2000;
 
-let state = { system:'', description:'', improvement:'', company:'', employeeId:'', attachments:[] };
+let state = { systems:[], proposalType:'', system:'', description:'', improvement:'', company:'', employeeId:'', attachments:[] };
+
+function selectType(btn,value){
+  document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  state.proposalType=value;
+}
 
 document.addEventListener('click', function(e){
   const btn = e.target.closest('.btn, .sys-btn');
@@ -566,14 +596,31 @@ function updateProgress(current){
 }
 
 function selectSystem(btn,value){
-  document.querySelectorAll('.sys-btn').forEach(b=>b.classList.remove('selected'));
-  btn.classList.add('selected');
   const oi=document.getElementById('otherInput');
-  if(value==='__other__'){oi.classList.add('show');state.system=oi.value.trim();}
-  else{oi.classList.remove('show');state.system=value;}
+  if(value==='__other__'){
+    btn.classList.toggle('selected');
+    if(btn.classList.contains('selected')){ oi.classList.add('show'); }
+    else{ oi.classList.remove('show'); oi.value=''; }
+  }else{
+    btn.classList.toggle('selected');
+  }
+  rebuildSystems();
 }
-function updateOtherSystem(v){state.system=v.trim();}
-function validatePage2(){ if(!state.system){alert('請選擇提案系統');return;} goTo(3); }
+function rebuildSystems(){
+  const arr=[];
+  document.querySelectorAll('#page2 .sys-btn.selected').forEach(b=>{
+    if(b.id==='otherBtn'){
+      const v=document.getElementById('otherInput').value.trim();
+      if(v) arr.push(v);
+    }else{
+      arr.push(b.textContent.trim());
+    }
+  });
+  state.systems=arr;
+  state.system=arr.join('、');
+}
+function updateOtherSystem(v){ rebuildSystems(); }
+function validatePage2(){ if(state.systems.length===0){alert('請至少選擇一項提案系統');return;} goTo(3); }
 
 function updateCount(id,countId){
   let val=document.getElementById(id).value;
@@ -608,6 +655,7 @@ function renderAttachList(){
   list.innerHTML=state.attachments.map((a,i)=>'<div class="attach-item"><span class="attach-item-name">📄 '+a.name+'</span><span class="attach-item-size">'+(a.size/1024).toFixed(0)+' KB</span><button class="attach-remove" onclick="removeAttach('+i+')">✕</button></div>').join('');
 }
 function validatePage3(){
+  if(!state.proposalType){alert('請選擇提案類型');return;}
   const desc=document.getElementById('description').value.trim();
   if(!desc){alert('請填寫描述');return;}
   const totalSize=state.attachments.reduce((s,a)=>s+a.size,0);
@@ -673,6 +721,7 @@ function buildPreview(){
     : '<span style="color:var(--ink-muted)">無附件</span>';
   document.getElementById('previewTable').innerHTML=
     '<tr><td>提案系統</td><td>'+state.system+'</td></tr>'+
+    '<tr><td>提案類型</td><td>'+state.proposalType+'</td></tr>'+
     '<tr><td>描述</td><td>'+state.description+'</td></tr>'+
     '<tr><td>所屬公司</td><td>'+state.company+'</td></tr>'+
     '<tr><td>員編</td><td>'+state.employeeId+'</td></tr>'+
@@ -685,6 +734,7 @@ async function submitForm(){
   try{
     const payload={
       system:state.system, description:state.description, improvement:'',
+      proposalType:state.proposalType,
       company:state.company, employeeId:state.employeeId,
       attachments:state.attachments.map(a=>({name:a.name,type:a.type,data:a.data}))
     };
